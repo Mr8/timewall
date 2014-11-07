@@ -1,12 +1,35 @@
 /*
-    __Author__ : zhangbo1@ijinshan.com
-    __Time__   : 2014/05/23
-    __License__: MIT
+    * file: queue.h
+    * author: zhangbo
+    * time: 2014.11.6
+    * Copyright (c) 2014, zhangbo <zhangbolinux@sina.con>.
 
+    * Redistribution and use in source and binary forms, with or without
+    * modification, are permitted provided that the following conditions are
+    * met:
+    *
+    *  1. Redistributions of source code must retain the above copyright
+    *     notice, this list of conditions and the following disclaimer.
+    *
+    *  2. Redistributions in binary form must reproduce the above copyright
+    *     notice, this list of conditions and the following disclaimer in the
+    *     documentation and/or other materials provided with the distribution.
+    *
+    * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+    * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _QUEUE_H
-#define _QUEUE_H
+#ifndef _QUEUE_H_
+#define _QUEUE_H_
 
 #ifndef _LINUX_LIST_H
 
@@ -25,7 +48,7 @@ struct list_head {
 };
 
     /*
-    *  frequently used functions 
+    *  frequently used functions
     *
     *  1.   void init_queue_head(struct list_head *list)
     *
@@ -600,7 +623,7 @@ static inline void list_splice_tail_init(struct list_head *list,
  */
 #define list_safe_reset_next(pos, n, member)                \
     n = list_entry(pos->member.next, typeof(*pos), member)
-    
+
 #endif
 
 
@@ -672,6 +695,6 @@ static inline int queue_empty(struct list_head *headp)
 
 #define queue_for_each(pos, head) \
     for (pos = (head)->next; pos != (head); pos = pos->next)
-    
+
 
 #endif
