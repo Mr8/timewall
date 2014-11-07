@@ -30,21 +30,23 @@
 
 #include "all.h"
 
-static inline int _link_insert(
+static inline int __link_insert(
     struct rb_root *root, struct graph_node_link_t *data
 );
 
-static inline struct graph_node_link_t * _link_get(
+
+static inline struct graph_node_link_t * __link_get(
     struct rb_root * root, char *node_name
 );
 
-void __free_link(struct graph_node_link_t * _link){
+
+static inline void __free_link(struct graph_node_link_t * _link){
     free(_link);
     _link = NULL;
 }
 
 // grabge collection of link structure
-struct graph_node_link_t * __create_link(char *node_name){
+static inline struct graph_node_link_t * __create_link(char *node_name){
 
     struct graph_node_link_t * _rlink = \
         (struct graph_node_link_t *)malloc(sizeof(struct graph_node_link_t));
@@ -59,7 +61,9 @@ struct graph_node_link_t * __create_link(char *node_name){
 }
 
 
-struct graph_node_t * create_node(char *node_name, void *data, uint64_t data_len){
+struct graph_node_t * create_node(
+    char *node_name, void *data, uint64_t data_len
+){
     if(node_name == NULL)
         return NULL;
 
@@ -79,11 +83,13 @@ struct graph_node_t * create_node(char *node_name, void *data, uint64_t data_len
     return _node;
 }
 
+
 void delete_node(struct graph_node_t * pg){
     rb_link_tree_iterate(pg, __free_link);
     free(pg);
 }
 // create a link with point to node dest which argument give
+//
 int build_link(
     struct graph_node_t *nodes, struct graph_node_t * noded
 ){
@@ -101,7 +107,7 @@ int build_link(
     _rlink->link = noded;
     nodes->link_num += 1;
 
-    return _link_insert(&(nodes->_rbt_links), _rlink);
+    return __link_insert(&(nodes->_rbt_links), _rlink);
 }
 
 // create an double linke between node source and node dest
@@ -114,11 +120,13 @@ int build_double_link(
     return -1;
 }
 
+
 static void rb_tree_erase_speed(struct rb_root *root, struct rb_node *node)
 {
     rb_erase(node, (struct rb_root *)root);
     return;
 }
+
 
 int destory_link(
     struct graph_node_t * nodes, struct graph_node_t * noded)
@@ -128,7 +136,7 @@ int destory_link(
         return -1;
     }
 
-    struct graph_node_link_t * _link = _link_get(&nodes->_rbt_links, node_name);
+    struct graph_node_link_t * _link = __link_get(&nodes->_rbt_links, node_name);
     if(_link == NULL){
         printf("[DEBUG] No found link %s in link tree\n", node_name);
         return -1;
@@ -141,6 +149,7 @@ int destory_link(
     return 0;
 }
 
+
 int destory_double_link(
     struct graph_node_t * nodes, struct graph_node_t * noded)
 {
@@ -149,7 +158,7 @@ int destory_double_link(
         return -1;
     }
 
-    struct graph_node_link_t * _links = _link_get(&nodes->_rbt_links, node_name);
+    struct graph_node_link_t * _links = __link_get(&nodes->_rbt_links, node_name);
     if(_links == NULL){
         return -1;
     }
@@ -161,7 +170,7 @@ int destory_double_link(
     if(node_name == NULL){
         return -1;
     }
-    struct graph_node_link_t * _linkd = _link_get(&noded->_rbt_links, node_name);
+    struct graph_node_link_t * _linkd = __link_get(&noded->_rbt_links, node_name);
     if(_linkd == NULL){
         return -1;
     }
@@ -174,8 +183,9 @@ int destory_double_link(
     return 0;
 }
 
+
 // get link with link to node_name
-static inline struct graph_node_link_t * _link_get(
+static inline struct graph_node_link_t * __link_get(
     struct rb_root * root, char *node_name
 ){
     struct rb_node *node = root->rb_node;
@@ -197,7 +207,8 @@ static inline struct graph_node_link_t * _link_get(
     return NULL;
 }
 
-static inline int _link_insert(
+
+static inline int __link_insert(
     struct rb_root *root, struct graph_node_link_t *data
 ){
 
@@ -226,6 +237,7 @@ static inline int _link_insert(
     return 0;
 }
 
+
 static void __rb_link_tree_iterate(
     struct graph_node_t * node,
     struct rb_node * start,
@@ -249,6 +261,7 @@ static void __rb_link_tree_iterate(
         callback(link);
     }
 }
+
 
 void rb_link_tree_iterate(
     struct graph_node_t * node,
