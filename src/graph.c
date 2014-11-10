@@ -30,6 +30,16 @@
 
 #include "all.h"
 
+static inline uint64_t __get_link_weight(struct graph_node_link_t * _l){
+    return _l->weight;
+}
+
+
+static inline void __set_link_weight(struct graph_node_link_t * _l, uint64_t weight){
+    _l->weight = weight;
+}
+
+
 static inline int __link_insert(
     struct rb_root *root, struct graph_node_link_t *data
 );
@@ -89,9 +99,11 @@ void delete_node(struct graph_node_t * pg){
     free(pg);
 }
 // create a link with point to node dest which argument give
-//
+
 int build_link(
-    struct graph_node_t *nodes, struct graph_node_t * noded
+    struct graph_node_t *nodes,
+    struct graph_node_t * noded,
+    uint64_t weight
 ){
     char * node_name = noded->node_name;
 
@@ -105,6 +117,7 @@ int build_link(
     }
 
     _rlink->link = noded;
+    __set_link_weight(_rlink, weight);
     nodes->link_num += 1;
 
     return __link_insert(&(nodes->_rbt_links), _rlink);
@@ -112,9 +125,14 @@ int build_link(
 
 // create an double linke between node source and node dest
 int build_double_link(
-    struct graph_node_t *nodes, struct graph_node_t *noded)
+    struct graph_node_t *nodes,
+    struct graph_node_t *noded,
+    uint64_t weight1,   // node source to node dest
+    uint64_t weight2)   // node dest to node source
 {
-    if(build_link(nodes, noded) == 0 && build_link(noded, nodes) == 0){
+    if(build_link(nodes, noded, weight1) == 0 && \
+       build_link(noded, nodes, weight2) == 0)
+    {
         return 0;
     }
     return -1;

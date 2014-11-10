@@ -50,6 +50,7 @@ struct graph_node_link_t {
     struct rb_node      rb_node;
     char                node_name[GRAPH_NODE_NAME_LEN];
     struct graph_node_t *link;
+    uint64_t            weight;
     void (* free)(struct graph_node_link_t * _link);
 };
 
@@ -58,6 +59,8 @@ struct graph_t {
     struct rb_root      _rbt_root ;
     struct graph_node_t node ;
     uint64_t            node_num;
+    int (* add_node)(char *name, void *data, uint64_t data_len);
+    int (* rm_node)(char *name);
 };
 
 
@@ -75,11 +78,16 @@ void delete_node(struct graph_node_t * pg);
  *      pg       [+] point to this graph
  */
 
-int build_link(struct graph_node_t *nodes, struct graph_node_t * noded);
+int build_link(
+    struct graph_node_t *nodes,
+    struct graph_node_t * noded,
+    uint64_t weight
+);
 /* build an link point to noded
  * @arg:
  *      nodes    [+] node source
  *      noded    [+] node dest
+ *      weight   [+] weight of this link
  */
 
 int destory_link(struct graph_node_t * nodes, struct graph_node_t * noded);
@@ -89,14 +97,24 @@ int destory_link(struct graph_node_t * nodes, struct graph_node_t * noded);
  *      noded    [+] node dest
  */
 
-int build_double_link(struct graph_node_t *nodes, struct graph_node_t *noded);
+int build_double_link(
+    struct graph_node_t *nodes,
+    struct graph_node_t *noded,
+    uint64_t weight1,
+    uint64_t weight2
+);
 /* build the link between nodes and noded
  * @arg:
  *      nodes    [+] node source
  *      noded    [+] node dest
+ *      weight1  [+] weight of source to dest
+ *      weight2  [+] weight of dest to source
  */
 
-int destory_double_link(struct graph_node_t * nodes, struct graph_node_t * noded);
+int destory_double_link(
+    struct graph_node_t * nodes,
+    struct graph_node_t * noded
+);
 /* destory the link between nodes and noded
  * @arg:
  *      nodes    [+] node source
