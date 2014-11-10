@@ -522,20 +522,20 @@ void rb_tree_erase_speed(struct rb_root *root, struct rb_node *node)
     return;
 }
 
-static void rb_tree_iterate_and_free(struct rb_root *handle, struct rb_node *start)
-{
-    struct rb_node_simple *debug;
-    if(!start)
-        return;
-    if(start->rb_left) {
-        rb_tree_iterate_and_free(handle, start->rb_left);
-        start->rb_left = 0;
-    }
-    if(start->rb_right) {
-        rb_tree_iterate_and_free(handle, start->rb_right);
-        start->rb_right = 0;
-    }
-    memset(start, 0x0, sizeof(struct rb_node));
-    debug = (struct rb_node_simple *)container_of(start, struct rb_node_simple, node);
-    (debug);
-}
+/*static void rb_tree_iterate_and_free(struct rb_root *handle, struct rb_node *start)*/
+/*{*/
+    /*struct rb_node_simple *debug;*/
+    /*if(!start)*/
+        /*return;*/
+    /*if(start->rb_left) {*/
+        /*rb_tree_iterate_and_free(handle, start->rb_left);*/
+        /*start->rb_left = 0;*/
+    /*}*/
+    /*if(start->rb_right) {*/
+        /*rb_tree_iterate_and_free(handle, start->rb_right);*/
+        /*start->rb_right = 0;*/
+    /*}*/
+    /*memset(start, 0x0, sizeof(struct rb_node));*/
+    /*debug = (struct rb_node_simple *)container_of(start, struct rb_node_simple, node);*/
+    /*(debug);*/
+/*}*/

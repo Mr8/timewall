@@ -34,7 +34,7 @@
 thread_pool_t g_threads_pool;
 
 
-static void *thread_entry(void *args){
+static void * thread_entry(void *args){
 
     // to avoid warning
     if(args == (void *)NULL){}
@@ -70,6 +70,7 @@ static void *thread_entry(void *args){
         g_threads_pool.fp_task_handler(task);
 
     }
+    return NULL;
 }
 
 thread_pool_t * thread_pool_ini(uint32_t workernum,
