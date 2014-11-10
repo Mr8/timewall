@@ -24,6 +24,7 @@ clean:
 	@for d in $(TARGETS); do \
 		$(MAKE) -C $$d clean; \
 	done
+	rm -rf bin/
 
 test: build
 	@for d in $(TESTDIR); do \
