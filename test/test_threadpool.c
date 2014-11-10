@@ -17,6 +17,7 @@ int main(){
         printf("[DEBUG] Add to task queue with id:%d\n", datas[i]);
         thread_pool_add_task(&Tasks[i]);
     }
-    sleep(1000);
+    sleep(1);
     thread_pool_destory(thp);
+    return 0;
 }
