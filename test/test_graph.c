@@ -20,9 +20,9 @@ int main(){
 
     printf("[DEBUG] create link with between two node\n");
 
-    build_link(node1, node2);
-    build_link(node1, node3);
-    build_link(node1, node4);
+    build_link(node1, node2, 1);
+    build_link(node1, node3, 2);
+    build_link(node1, node4, 3);
 
     assert(node1->link_num == 3);
 
