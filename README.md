@@ -6,4 +6,5 @@
 3. [TODO] network module
 4. [TODO] protocol
 5. [TODO] config support
-6. [TODO] log module
+6. [DONE] log module
+7. [TODO] algorithm of dijkstra
