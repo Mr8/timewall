@@ -143,7 +143,7 @@ int destory_double_link(
 
 void rb_link_tree_iterate(
     struct graph_node_t * node,
-    void (* callback)(struct graph_node_link_t *node)
+    void (* callback)(struct graph_node_link_t *link)
 );
 /* iterate the link tree
  * @arg:

@@ -419,7 +419,7 @@ static void __rb_link_tree_iterate(
 
 void rb_link_tree_iterate(
     struct graph_node_t * node,
-    void (* callback)(struct graph_node_link_t *node)
+    void (* callback)(struct graph_node_link_t *link)
 ){
     return __rb_link_tree_iterate(node, node->_rbt_links.rb_node, callback);
 }
