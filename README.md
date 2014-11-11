@@ -35,4 +35,4 @@ TODO: implement bellow
 [TODO] protocol
 [TODO] config support
 [DONE] log module
-[TODO] algorithm of on the graph`
+[TODO] algorithm of on the graph
