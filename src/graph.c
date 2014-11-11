@@ -30,12 +30,148 @@
 
 #include "all.h"
 
+static void rb_tree_erase_speed(struct rb_root *root, struct rb_node *node);
+
+static void __rb_node_tree_iterate_free(
+    struct graph_t * graph,
+    struct rb_node * start
+){
+    if(!start){
+        return;
+    }
+    if(start->rb_left) {
+        __rb_node_tree_iterate_free(graph, start->rb_left);
+        start->rb_left = 0;
+    }
+    if(start->rb_right) {
+        __rb_node_tree_iterate_free(graph, start->rb_right);
+        start->rb_right = 0;
+    }
+
+    struct graph_node_t * node = (struct graph_node_t *)CONTAINER_OF(
+        start, struct graph_node_t , rb_node
+    );
+
+    memset(start, 0x0, sizeof(struct rb_node));
+    if(node->free) node->free(node);
+}
+
+
+void __free_graph_nodes(struct graph_t * graph)
+{
+    __rb_node_tree_iterate_free(graph, graph->node_root.rb_node);
+    free(graph);
+}
+
+static inline int __node_insert(
+    struct rb_root *root, struct graph_node_t *data
+){
+
+    struct rb_node **tmp = &(root->rb_node), *parent = NULL;
+
+    /* Figure out where to put new node */
+    while (*tmp) {
+        struct graph_node_t *this = (struct graph_node_t *)CONTAINER_OF(
+            *tmp, struct graph_node_t, rb_node
+        );
+
+        parent = *tmp;
+        int c = strcmp(data->node_name, this->node_name);
+        if(c < 0)
+            tmp = &((*tmp)->rb_left);
+        else if (c > 0)
+            tmp = &((*tmp)->rb_right);
+        else
+            return -1;
+    }
+
+    /* Add new node and rebalance tree. */
+    rb_link_node(&data->rb_node, parent, tmp);
+    rb_insert_color(&data->rb_node, root);
+
+    return 0;
+}
+
+
+static inline int __add_node(struct graph_t * _g, struct graph_node_t * _n){
+    if(_g == NULL ||_n == NULL){
+        return -1;
+    }
+    if(__node_insert(&_g->node_root, _n) == 0){
+        _g->node_num += 1;
+        return 0;
+    }
+    return -1;
+}
+
+
+static inline struct graph_node_t * __node_get(
+    struct rb_root * root, char *node_name
+){
+    struct rb_node *node = root->rb_node;
+
+    while (node) {
+        struct graph_node_t * data = (struct graph_node_t *)CONTAINER_OF(
+            node, struct graph_node_t, rb_node
+        );
+
+        int c = strcmp(node_name, data->node_name);
+        if (c < 0)
+            node = node->rb_left;
+        else if (c > 0)
+            node = node->rb_right;
+        else
+            return data;
+    }
+    return NULL;
+}
+
+
+static inline int __rm_node(
+    struct graph_t * _g,
+    char *name,
+    void (* callback)(struct graph_node_t * ))
+{
+    if(name == NULL){
+        return -1;
+    }
+
+    struct graph_node_t * _node = __node_get(&_g->node_root, name);
+    if(_node == NULL){
+        printf("[DEBUG] No found node %s in graph\n", name);
+        return -1;
+    }
+    rb_tree_erase_speed(&_g->node_root, &_node->rb_node);
+    _g->node_num -= 1;
+    if(callback) callback(_node);
+
+    return 0;
+}
+
+
+struct graph_t * graph(){
+    struct graph_t * _g = (struct graph_t *)malloc(sizeof(struct graph_t));
+    if(_g == NULL){
+        return NULL;
+    }
+    _g->node_root = RB_ROOT;
+    _g->node_num = 0;
+
+    _g->add_node = &__add_node;
+    _g->rm_node = &__rm_node;
+    _g->free = &__free_graph_nodes;
+    return _g;
+}
+
+
 static inline uint64_t __get_link_weight(struct graph_node_link_t * _l){
     return _l->weight;
 }
 
 
-static inline void __set_link_weight(struct graph_node_link_t * _l, uint64_t weight){
+static inline void __set_link_weight(
+    struct graph_node_link_t * _l, uint64_t weight
+){
     _l->weight = weight;
 }
 
@@ -102,7 +238,7 @@ void delete_node(struct graph_node_t * pg){
 
 int build_link(
     struct graph_node_t *nodes,
-    struct graph_node_t * noded,
+    struct graph_node_t *noded,
     uint64_t weight
 ){
     char * node_name = noded->node_name;

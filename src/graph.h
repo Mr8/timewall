@@ -34,10 +34,12 @@
 #include "all.h"
 
 #define GRAPH_NODE_NAME_LEN 256
+#define GRAPH graph()
 
 
 struct graph_node_t {
     struct rb_root _rbt_links;
+    struct rb_node rb_node;    // a member as node of red-black tree on graph
     char           node_name[GRAPH_NODE_NAME_LEN];
     uint64_t       link_num;
     void           *data;
@@ -56,12 +58,30 @@ struct graph_node_link_t {
 
 
 struct graph_t {
-    struct rb_root      _rbt_root ;
-    struct graph_node_t node ;
+    struct rb_root      node_root;
     uint64_t            node_num;
-    int (* add_node)(char *name, void *data, uint64_t data_len);
-    int (* rm_node)(char *name);
+    int (* add_node)(struct graph_t *graph, struct graph_node_t *node);
+    int (* rm_node)(
+        struct graph_t *graph,
+        char *name,
+        void (* callback)(struct graph_node_t * node)
+    );
+    void (* free)(struct graph_t *);
 };
+
+
+struct graph_t * graph();
+/* create a graph struct
+ * @arg:
+ *      empty
+ * graph with method ->
+ * @1.
+ *      add_node   [+] add a node to this graph
+ * @2.
+ *      rm_node    [+] remove a node from this graph
+ * @3.
+ *      free       [+] free this graph
+ */
 
 
 struct graph_node_t * create_node(char *name, void *data, uint64_t data_len);
