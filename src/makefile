@@ -9,7 +9,7 @@ OBJECTS := graph.o threadpool.o rbtree.o
 
 default: build
 
-build:
+build:$(OBJECTS)
 	test -d $(LIBDIR) || mkdir $(LIBDIR); \
  	$(AR) $(ALLLIB) $(OBJECTS)
 
