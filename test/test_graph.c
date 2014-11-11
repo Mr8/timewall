@@ -49,9 +49,33 @@ int main(){
     rb_link_tree_iterate(node1, __callback);
     printf("[DEBUG] node %s with link %ld\n", node1->node_name, node1->link_num);
 
-    node1->free(node1);
-    node2->free(node2);
-    node3->free(node3);
-    node4->free(node4);
+
+    ///////////////////////////////////////////////////////
+    ////////test graph///////
+
+    struct graph_t * _G = GRAPH;
+    printf("[DEBUG] add node to graph\n");
+    printf("[DEBUG] insert to graph %d\n",_G->add_node(_G, node1));
+    printf("[DEBUG] insert to graph %d\n",_G->add_node(_G, node1));
+    printf("[DEBUG] insert to graph %d\n",_G->add_node(_G, node2));
+    printf("[DEBUG] insert to graph %d\n",_G->add_node(_G, node3));
+    printf("[DEBUG] insert to graph %d\n",_G->add_node(_G, node4));
+    printf("[DEBUG] graph with node %ld\n", _G->node_num);
+    _G->rm_node(_G, node1->node_name, node1->free);
+    printf("[DEBUG] after delete graph with node %ld\n", _G->node_num);
+    printf("[DEBUG] free nodes graph\n");
+
+    char buf[1024];;
+    int limit = 100000;
+    struct graph_node_t * nodes[limit];
+    int i = 0;
+    for(; i < limit; i++){
+        sprintf(buf, "node_%d", i);
+        nodes[i] = create_node(buf, NULL, 0);
+        memset(buf, 0x0, 1024);
+        _G->add_node(_G, nodes[i]);
+    }
+    printf("[DEBUG] after cycle graph with node %ld\n", _G->node_num);
+    _G->free(_G);
     return 0;
 }
