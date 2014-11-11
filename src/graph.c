@@ -138,7 +138,6 @@ static inline int __rm_node(
 
     struct graph_node_t * _node = __node_get(&_g->node_root, name);
     if(_node == NULL){
-        printf("[DEBUG] No found node %s in graph\n", name);
         return -1;
     }
     rb_tree_erase_speed(&_g->node_root, &_node->rb_node);
