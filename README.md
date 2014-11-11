@@ -19,7 +19,9 @@ There's the questions:
 1. how to ognaize the network links of your app users ?
 2. how to get the users follower and follwing ?
 3. if user A follow B and B follow C, how to know the relationship between A and C.
+
 Besides, timewall can be also used to other fields:
+
 1. how to prove the `Six degrees of separation theory` with a better way ?
 2. actually you can simulate a body, trate each node as cell on animals.
 3. on astronomy, node also be the plant.
