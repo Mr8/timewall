@@ -31,8 +31,9 @@
 #include "all.h"
 
 const char *LogLevelStr[] = {
-    "Debug", "Info", "Error", "Fatal",
+    "DEBUG", "INFO", "ERROR", "FATAL"
 };
+
 
 log_handler * init_log(const char *fpath, char level, const char type){
     if (fpath == NULL)

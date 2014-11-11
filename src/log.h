@@ -32,6 +32,7 @@
 #define _LOG_H_
 
 #include "all.h"
+
 typedef enum {
     log_debug,
     log_info,
