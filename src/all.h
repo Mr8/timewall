@@ -30,5 +30,6 @@
 #include "rbtree.h"
 #include "graph.h"
 #include "threadpool.h"
+#include "utils.h"
 
 #endif
