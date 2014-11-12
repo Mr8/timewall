@@ -108,6 +108,10 @@ int build_link(
  *      nodes    [+] node source
  *      noded    [+] node dest
  *      weight   [+] weight of this link
+ *
+ * @return:
+ *      0        [+] success
+ *      !0       [+] failed
  */
 
 int destory_link(struct graph_node_t * nodes, struct graph_node_t * noded);
@@ -115,6 +119,10 @@ int destory_link(struct graph_node_t * nodes, struct graph_node_t * noded);
  * @arg:
  *      nodes    [+] node source
  *      noded    [+] node dest
+ *
+ * @return:
+ *      0        [+] success
+ *      !0       [+] failed
  */
 
 int build_double_link(
@@ -129,6 +137,10 @@ int build_double_link(
  *      noded    [+] node dest
  *      weight1  [+] weight of source to dest
  *      weight2  [+] weight of dest to source
+ *
+ * @return:
+ *      0        [+] success
+ *      !0       [+] failed
  */
 
 int destory_double_link(
@@ -139,6 +151,10 @@ int destory_double_link(
  * @arg:
  *      nodes    [+] node source
  *      noded    [+] node dest
+ *
+ * @return:
+ *      0        [+] success
+ *      !0       [+] failed
  */
 
 void rb_link_tree_iterate(
