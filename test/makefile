@@ -13,6 +13,7 @@ test:
 	$(CC) $(CFLAGS) $(INCLUDE) test_threadpool.c $(MYLIB) -o $(BINDIR)/test_thread_pool -lpthread
 	$(CC) $(CFLAGS) $(INCLUDE) test_log.c $(MYLIB) -o $(BINDIR)/test_log
 	$(CC) $(CFLAGS) $(INCLUDE) test_utils.c $(MYLIB) -o $(BINDIR)/test_utils
+	$(CC) $(CFLAGS) $(INCLUDE) test_config.c $(MYLIB) -o $(BINDIR)/test_config
 
 clean:
 	-$(RM) $(TARGET) $(MYLIB)

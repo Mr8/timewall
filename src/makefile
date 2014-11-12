@@ -5,7 +5,7 @@ RANLIB := ranlib
 LIBDIR=../lib
 ALLLIB=../lib/base.a
 
-OBJECTS := graph.o threadpool.o rbtree.o log.o utils.o
+OBJECTS := graph.o threadpool.o rbtree.o log.o utils.o config.o
 
 default: build
 
