@@ -31,5 +31,6 @@
 #include "graph.h"
 #include "threadpool.h"
 #include "utils.h"
+#include "config.h"
 
 #endif
