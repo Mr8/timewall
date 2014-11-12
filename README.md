@@ -1,4 +1,4 @@
-# TimeWall is a graph databases
+# TimeWall is a graph database
 > It be used to apply mathematic model and social network with graph algorithms and so on...
 
 ## Features:
