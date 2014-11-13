@@ -57,8 +57,7 @@ static void __rb_node_tree_iterate_free(
 }
 
 
-void __free_graph_nodes(struct graph_t * graph)
-{
+void __free_graph_nodes(struct graph_t * graph){
     __rb_node_tree_iterate_free(graph, graph->node_root.rb_node);
     free(graph);
 }
@@ -151,6 +150,7 @@ static inline int __rm_node(
 struct graph_t * graph(){
     struct graph_t * _g = (struct graph_t *)malloc(sizeof(struct graph_t));
     if(_g == NULL){
+        LOG_ERROR("create graph failed, malloc of memory error");
         return NULL;
     }
     _g->node_root = RB_ROOT;
