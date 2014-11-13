@@ -56,9 +56,22 @@ typedef struct {
 } log_handler;
 
 extern const char *log_level_str[];
+extern log_handler * GLOGHANDLER;
+
+int INIT_LOG(const char *fpath, char level, const char type);
+/* log print to stderr by default
+ * if INIT_LOG been called, log will be redirect to the fpath
+ * which you give
+ * @arg:
+ *      fpath         [+] log file path
+ *      level         [+] choice from (log_debug, log_info, log_error, log_fatal)
+ *      type          [+] TEXT or BINARY
+ * @return:
+ *      0             [-] success
+ * */
 
 // fail return null
-log_handler * init_log(const char *fpath, char level, const char type);
+log_handler * _init_log(const char *fpath, char level, const char type);
 
 // fail return -1, success return write bytes
 int write_log(log_handler *log, const unsigned char *data, unsigned int size);
@@ -79,14 +92,15 @@ int fseek_log(log_handler *log, unsigned long long offset);
 
 int uinit_log(log_handler *log);
 
-#define BINLOGHANDLER(fpath)            init_log((fpath), log_debug, 'b')
-#define TXTLOGHANDLER(fpath)            init_log((fpath), log_debug, 't')
+#define BINLOGHANDLER(fpath)            _init_log((fpath), log_debug, 'b')
+#define TXTLOGHANDLER(fpath)            _init_log((fpath), log_debug, 't')
 #define SETLEVEL(log, level)            (log)->_level = (level)
 #define DELETELOG(log)                  UninitLog((log))
 
-#define LOG_DEBUG(log, fmt...)          write_fmt_log((log), log_debug, fmt)
-#define LOG_INFO( log, fmt...)          write_fmt_log((log), log_info,  fmt)
-#define LOG_ERROR(log, fmt...)          write_fmt_log((log), log_error, fmt)
-#define LOG_FATAL(log, fmt...)          write_fmt_log((log), log_fatal, fmt)
+#define LOG_DEBUG(fmt...)          write_fmt_log((GLOGHANDLER), log_debug, fmt)
+#define LOG_INFO(fmt...)           write_fmt_log((GLOGHANDLER), log_info,  fmt)
+#define LOG_ERROR(fmt...)          write_fmt_log((GLOGHANDLER), log_error, fmt)
+#define LOG_FATAL(fmt...)          write_fmt_log((GLOGHANDLER), log_fatal, fmt)
+#define LOG_STD(fmt...)            write_fmt_log((GLOGHANDLER), log_info,  fmt)
 
 #endif

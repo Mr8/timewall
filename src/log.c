@@ -30,12 +30,23 @@
 
 #include "all.h"
 
+log_handler * GLOGHANDLER = NULL;
+
 const char *LogLevelStr[] = {
     "DEBUG", "INFO", "ERROR", "FATAL"
 };
 
 
-log_handler * init_log(const char *fpath, char level, const char type){
+int INIT_LOG(const char *fpath, char level, const char type){
+    GLOGHANDLER = _init_log(fpath, level, type);
+    if(GLOGHANDLER == NULL){
+        return -1;
+    }
+    return 0;
+}
+
+
+log_handler * _init_log(const char *fpath, char level, const char type){
     if (fpath == NULL)
         return NULL;
 
@@ -77,6 +88,10 @@ log_handler * init_log(const char *fpath, char level, const char type){
 }
 
 int write_fmt_log(log_handler *log, char level, const char *fmt, ...) {
+    if(log == NULL && GLOGHANDLER == NULL){
+        GLOGHANDLER = _init_log((const char *)"/dev/stderr", log_debug, TEXT);
+        log = GLOGHANDLER;
+    }
     if (log == NULL || fmt == NULL)
         return -1;
     if (log->_level > level)
@@ -167,6 +182,10 @@ long long file_size(log_handler *log) {
 }
 
 int write_log(log_handler *log, const unsigned char *data, unsigned int size) {
+    if(log == NULL && GLOGHANDLER == NULL){
+        GLOGHANDLER = _init_log((const char *)"/dev/stderr", log_info, TEXT);
+        log = GLOGHANDLER;
+    }
     if (log == NULL || data == NULL)
         return -1;
 
