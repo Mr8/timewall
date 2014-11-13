@@ -78,7 +78,7 @@ config * init_config(const char *path){
     int i;
     for (i = 0; i < count; i++) {
         strsplit(lines[i], " ", line_items);
-        if(strsplit(line_items[0], ":", key_value) > 2){
+        if(strsplit(line_items[0], ":", key_value) != 2){
             continue;
         }
         struct config_value * _cv = \
