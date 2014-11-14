@@ -38,18 +38,20 @@
 
 
 struct graph_node_t {
-    struct rb_root _rbt_links;
-    struct rb_node rb_node;    // a member as node of red-black tree on graph
-    char           node_name[GRAPH_NODE_NAME_LEN];
-    uint64_t       link_num;
-    void           *data;
-    uint64_t       data_len;
+    struct rb_root    _rbt_links;
+    struct rb_node    rb_node;    // a member as node of red-black tree on graph
+    struct list_head  node_queue;
+    char              node_name[GRAPH_NODE_NAME_LEN];
+    uint64_t          link_num;
+    void              *data;
+    uint64_t          data_len;
     void (* free)(struct graph_node_t *);
 };
 
 
 struct graph_node_link_t {
     struct rb_node      rb_node;
+    struct list_head    list_node;
     char                node_name[GRAPH_NODE_NAME_LEN];
     struct graph_node_t *link;
     uint64_t            weight;
@@ -84,7 +86,35 @@ struct graph_t * graph();
  */
 
 
+void iterate_graph_nodes(
+    struct graph_t * graph,
+    struct graph_node_t * start,
+    uint64_t deep,
+    void (* callback)(struct graph_node_t * node)
+);
+/*
+ * iterate nodes on this graph,
+ * it only for random nodes
+ * @arg:
+ *      graph    [+] point of the graph
+ *      start    [+] which node you want to iterate
+ *      deep     [+] how deep you want
+ *      callback [+] the callback deal with the *node point
+ * */
+
+
 struct graph_node_t * create_node(char *name, void *data, uint64_t data_len);
+/* create a graph node with name and data
+ * @arg:
+ *      name     [+] this node name
+ *      data     [+] point data of this node
+ *      data_len [+] data length
+ */
+
+
+struct graph_node_t * get_node(
+    struct graph_t * graph, char *node_name
+);
 /* create a graph node with name and data
  * @arg:
  *      name     [+] this node name
@@ -167,5 +197,23 @@ void rb_link_tree_iterate(
  *     callback  [+] function to deal with the link
  */
 
+void rb_link_tree_iterate_deep(
+    struct graph_node_t * node,
+    uint64_t deep,
+    void (* callback)(struct graph_node_link_t *link)
+);
+
+/* iterate the link tree
+ * @arg:
+ *     node      [+] this node
+ *     deep      [+] max deep of iterate
+ *     callback  [+] function to deal with the link
+ */
+
+void links_iterate(
+    struct graph_node_t * node,
+    uint64_t len,
+    void (* callback)(struct graph_node_link_t *link)
+);
 #endif
 

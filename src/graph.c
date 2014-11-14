@@ -30,7 +30,17 @@
 
 #include "all.h"
 
-static void rb_tree_erase_speed(struct rb_root *root, struct rb_node *node);
+static void
+rb_tree_erase_speed(struct rb_root *root, struct rb_node *node);
+
+
+static inline int
+__add_node(struct graph_t * _g, struct graph_node_t * _n);
+
+
+static inline struct graph_node_t *
+__node_get(struct rb_root * root, char *node_name);
+
 
 static void __rb_node_tree_iterate_free(
     struct graph_t * graph,
@@ -61,6 +71,50 @@ void __free_graph_nodes(struct graph_t * graph){
     __rb_node_tree_iterate_free(graph, graph->node_root.rb_node);
     free(graph);
 }
+
+
+static void __rb_node_tree_iterate(
+    struct graph_t * graph,
+    struct rb_node * start,
+    uint64_t deep,
+    void (* callback)(struct graph_node_t * node)
+){
+    if(!start || deep <= 0){
+        return;
+    }
+    if(start->rb_left) {
+        __rb_node_tree_iterate(
+            graph, start->rb_left, deep - 1, callback
+        );
+    }
+    if(start->rb_right) {
+        __rb_node_tree_iterate(
+            graph, start->rb_right, deep - 1, callback
+        );
+    }
+
+    struct graph_node_t * node = (struct graph_node_t *)CONTAINER_OF(
+        start, struct graph_node_t , rb_node
+    );
+
+    if(callback) callback(node);
+}
+
+
+void iterate_graph_nodes(
+    struct graph_t * graph,
+    struct graph_node_t * start,
+    uint64_t deep,
+    void (* callback)(struct graph_node_t * node)
+){
+    if(__node_get(&graph->node_root, start->node_name) == NULL){
+        return;
+    }
+    __rb_node_tree_iterate(
+        graph, &start->rb_node, deep, callback
+    );
+}
+
 
 static inline int __node_insert(
     struct rb_root *root, struct graph_node_t *data
@@ -123,6 +177,16 @@ static inline struct graph_node_t * __node_get(
             return data;
     }
     return NULL;
+}
+
+
+struct graph_node_t * get_node(
+    struct graph_t * graph, char *node_name
+){
+    if(graph == NULL || graph->node_num == 0){
+        return NULL;
+    }
+    return __node_get(&graph->node_root, node_name);
 }
 
 
@@ -194,7 +258,7 @@ static inline void __free_link(struct graph_node_link_t * _link){
 static inline struct graph_node_link_t * __create_link(char *node_name){
 
     struct graph_node_link_t * _rlink = \
-        (struct graph_node_link_t *)malloc(sizeof(struct graph_node_link_t));
+        (struct graph_node_link_t *)calloc(1, sizeof(struct graph_node_link_t));
 
     if(_rlink == (void *)NULL){
         return NULL;
@@ -213,17 +277,18 @@ struct graph_node_t * create_node(
         return NULL;
 
     struct graph_node_t * _node = \
-        (struct graph_node_t *)malloc(sizeof(struct graph_node_t));
+        (struct graph_node_t *)calloc(1, sizeof(struct graph_node_t));
 
     if(_node == NULL)
         return NULL;
 
     _node->_rbt_links = RB_ROOT;
+    init_queue_head(&_node->node_queue);
     _node->data = data;
     _node->data_len = data_len;
     _node->link_num = 0;
     _node->free = delete_node;
-    strncpy(_node->node_name, node_name, GRAPH_NODE_NAME_LEN);
+    strncpy(_node->node_name, node_name, strlen(node_name));
 
     return _node;
 }
@@ -255,6 +320,7 @@ int build_link(
     __set_link_weight(_rlink, weight);
     nodes->link_num += 1;
 
+    queue_add_tail(&_rlink->list_node, &nodes->node_queue);
     return __link_insert(&(nodes->_rbt_links), _rlink);
 }
 
@@ -291,10 +357,11 @@ int destory_link(
 
     struct graph_node_link_t * _link = __link_get(&nodes->_rbt_links, node_name);
     if(_link == NULL){
-        printf("[DEBUG] No found link %s in link tree\n", node_name);
+        LOG_DEBUG("No found link %s in link tree", node_name);
         return -1;
     }
     rb_tree_erase_speed(&nodes->_rbt_links, &_link->rb_node);
+    queue_del(&_link->list_node);
     _link->free(_link);
 
     nodes->link_num -= 1;
@@ -423,3 +490,61 @@ void rb_link_tree_iterate(
     return __rb_link_tree_iterate(node, node->_rbt_links.rb_node, callback);
 }
 
+
+static void __rb_link_tree_iterate_deep(
+    struct graph_node_t * node,
+    struct rb_node * start,
+    uint64_t deep,
+    void (* callback)(struct graph_node_link_t *node)
+){
+    if(!start || deep <= 0){
+        return;
+    }
+    if(start->rb_left) {
+        __rb_link_tree_iterate_deep(
+            node, start->rb_left, deep - 1, callback
+        );
+    }
+    if(start->rb_right) {
+        __rb_link_tree_iterate_deep(
+            node, start->rb_right, deep - 1, callback
+        );
+    }
+
+    struct graph_node_link_t * link = (struct graph_node_link_t *)CONTAINER_OF(
+        start, struct graph_node_link_t, rb_node
+    );
+
+    if(callback != NULL){
+        callback(link);
+    }
+}
+
+void rb_link_tree_iterate_deep(
+    struct graph_node_t * node,
+    uint64_t deep,
+    void (* callback)(struct graph_node_link_t *link)
+){
+    return __rb_link_tree_iterate_deep(
+        node, node->_rbt_links.rb_node, deep, callback
+    );
+}
+
+
+void links_iterate(
+    struct graph_node_t * node,
+    uint64_t len,
+    void (* callback)(struct graph_node_link_t *link)
+){
+    uint64_t i = 0;
+    struct list_head *cursor;
+    queue_for_each(cursor, &node->node_queue){
+        if(cursor == NULL) break;
+        struct graph_node_link_t * link = (struct graph_node_link_t *)CONTAINER_OF(
+            cursor, struct graph_node_link_t, list_node
+        );
+        i++;
+        if(i > len || link == NULL) break;
+        callback(link);
+    }
+}
