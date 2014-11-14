@@ -37,7 +37,7 @@ TODO: implement bellow
 
 ### [DONE] network module
 > TODO: Add timeout using minheap or rbtree
-> TODO: An beatiful way to exist the reactor
+> TODO: A beautiful way to exist the reactor
 
 ### [TODO] protocol
 > TODO: binary or text?
@@ -49,3 +49,6 @@ TODO: implement bellow
 > perfect
 
 ### [TODO] algorithm of on the graph
+
+### [TODO] object pool of nodes and links between nodes
+> A beautiful way to manage memory of nodes
