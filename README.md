@@ -29,10 +29,23 @@ Besides, timewall can be also used to other fields:
 
 TODO: implement bellow
 
-[DONE] graph operations
-[DONE] threadpool
-[TODO] network module
-[TODO] protocol
-[TODO] config support
-[DONE] log module
-[TODO] algorithm of on the graph
+### [DONE] graph operations
+> CRUD of nodes on graph
+
+### [DONE] threadpool
+> worker pool with thread may be good idea
+
+### [DONE] network module
+> TODO: Add timeout using minheap or rbtree
+> TODO: An beatiful way to exist the reactor
+
+### [TODO] protocol
+> TODO: binary or text?
+
+### [DONE] config support
+> perfect
+
+### [DONE] log module
+> perfect
+
+### [TODO] algorithm of on the graph
