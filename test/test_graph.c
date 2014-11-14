@@ -2,7 +2,7 @@
 #include <assert.h>
 
 void __callback(struct graph_node_link_t *link){
-    printf("[DEBUG]link %s \n", link->node_name);
+    printf("link %s \n", link->node_name);
 }
 
 int main(){
@@ -18,18 +18,21 @@ int main(){
 
     assert(node1->link_num == 0);
 
-    LOG_STD("[DEBUG] create link with between two node\n");
+    LOG_STD("create link with between two node\n");
 
     build_link(node1, node2, 1);
     build_link(node1, node3, 2);
     build_link(node1, node4, 3);
 
+    LOG_STD("iterate the node1 with deep 2");
+    rb_link_tree_iterate_deep(node1, 2, &__callback);
+
     assert(node1->link_num == 3);
 
-    LOG_STD("[DEBUG] node %s with link %ld\n", node1->node_name, node1->link_num);
+    LOG_STD("node %s with link %ld\n", node1->node_name, node1->link_num);
     rb_link_tree_iterate(node1, __callback);
 
-    LOG_STD("[DEBUG] destory link between %s <--> %s\n",
+    LOG_STD("destory link between %s <--> %s\n",
         node1->node_name, node2->node_name
     );
 
@@ -38,8 +41,10 @@ int main(){
     assert(node1->link_num == 2);
 
     rb_link_tree_iterate(node1, __callback);
-    LOG_STD("[DEBUG] node %s with link %ld\n", node1->node_name, node1->link_num);
-    LOG_STD("[DEBUG] destory link between %s <--> %s\n",
+    LOG_STD("iterate with queue");
+    links_iterate(node1, 2, __callback);
+    LOG_STD("node %s with link %ld\n", node1->node_name, node1->link_num);
+    LOG_STD("destory link between %s <--> %s\n",
         node1->node_name, node3->node_name
     );
     destory_link(node1, node3);
@@ -47,23 +52,23 @@ int main(){
     assert(node1->link_num == 1);
 
     rb_link_tree_iterate(node1, __callback);
-    LOG_STD("[DEBUG] node %s with link %ld\n", node1->node_name, node1->link_num);
+    LOG_STD("node %s with link %ld\n", node1->node_name, node1->link_num);
 
 
     ///////////////////////////////////////////////////////
     ////////test graph///////
 
     struct graph_t * _G = GRAPH;
-    LOG_STD("[DEBUG] add node to graph\n");
-    LOG_STD("[DEBUG] insert to graph %d\n",_G->add_node(_G, node1));
-    LOG_STD("[DEBUG] insert to graph %d\n",_G->add_node(_G, node1));
-    LOG_STD("[DEBUG] insert to graph %d\n",_G->add_node(_G, node2));
-    LOG_STD("[DEBUG] insert to graph %d\n",_G->add_node(_G, node3));
-    LOG_STD("[DEBUG] insert to graph %d\n",_G->add_node(_G, node4));
-    LOG_STD("[DEBUG] graph with node %ld\n", _G->node_num);
+    LOG_STD("add node to graph\n");
+    LOG_STD("insert to graph %d\n",_G->add_node(_G, node1));
+    LOG_STD("insert to graph %d\n",_G->add_node(_G, node1));
+    LOG_STD("insert to graph %d\n",_G->add_node(_G, node2));
+    LOG_STD("insert to graph %d\n",_G->add_node(_G, node3));
+    LOG_STD("insert to graph %d\n",_G->add_node(_G, node4));
+    LOG_STD("graph with node %ld\n", _G->node_num);
     _G->rm_node(_G, node1->node_name, node1->free);
-    LOG_STD("[DEBUG] after delete graph with node %ld\n", _G->node_num);
-    LOG_STD("[DEBUG] free nodes graph\n");
+    LOG_STD("after delete graph with node %ld\n", _G->node_num);
+    LOG_STD("free nodes graph\n");
 
     char buf[1024];;
     int limit = 100000;
@@ -75,7 +80,8 @@ int main(){
         memset(buf, 0x0, 1024);
         _G->add_node(_G, nodes[i]);
     }
-    LOG_STD("[DEBUG] after cycle graph with node %ld\n", _G->node_num);
+    LOG_STD("after cycle graph with node %ld\n", _G->node_num);
+
     _G->free(_G);
     return 0;
 }
