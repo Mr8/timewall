@@ -14,6 +14,7 @@ test:
 	$(CC) $(CFLAGS) $(INCLUDE) test_log.c $(MYLIB) -o $(BINDIR)/test_log
 	$(CC) $(CFLAGS) $(INCLUDE) test_utils.c $(MYLIB) -o $(BINDIR)/test_utils
 	$(CC) $(CFLAGS) $(INCLUDE) test_config.c $(MYLIB) -o $(BINDIR)/test_config
+	$(CC) $(CFLAGS) $(INCLUDE) test_buffer.c $(MYLIB) -o $(BINDIR)/test_buffer
 
 clean:
 	-$(RM) $(TARGET) $(MYLIB)
