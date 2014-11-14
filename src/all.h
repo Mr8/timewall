@@ -32,5 +32,8 @@
 #include "threadpool.h"
 #include "utils.h"
 #include "config.h"
+#include "_epoll.h"
+#include "buffer.h"
+#include "socket.h"
 
 #endif
