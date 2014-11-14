@@ -3,3 +3,4 @@ bin/
 *.d
 *.o
 *.a
+tags
